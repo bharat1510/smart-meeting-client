@@ -1,4 +1,4 @@
-# quickmeet
+# Smart Meeting
 A video chat/meeting webapp using WebRTC and WebSockets (socket.io).
 <br><br>
 
