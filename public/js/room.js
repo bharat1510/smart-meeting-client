@@ -743,14 +743,18 @@ cutCall.addEventListener('click', () => {
 //     mediaRecorder.stop();
 // });
 
-const sendAudioData = async (fd) => {
+const sendAudioData = async (data) => {
+    console.log("In Send Audio Data API Data is - ", data)
+    var formData = new FormData();
+    formData.append('saveAudio', audioTestFile);
+    formData.append('data', data);
+    console.log("In Send Audio Data API fd is - ", formData)
+    
     try {
-      const response = await fetch("http://192.168.2.16:8000/upload", {
+      const response = await fetch("http://192.168.2.245:8000/upload", {
         method: "POST",
         headers: {
-            // processData: false,
-            // contentType: false,
-            'Content-Type': 'application/octet-stream',
+            'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
         },
         body: JSON.stringify({
           fd,
@@ -763,6 +767,7 @@ const sendAudioData = async (fd) => {
       console.error(error);
       return error;
     }
+
 };
 
 const handleSuccess = function(stream) {
@@ -778,18 +783,30 @@ const handleSuccess = function(stream) {
     mediaRecorder.addEventListener('stop', function() {
     console.log("In Download assignments")
     let blobAudioData = new Blob(recordedChunks);
-    saveAudioBtn.href = URL.createObjectURL(new Blob(recordedChunks));
-    console.log("after the URL")
-    const fileName = document.querySelector('.roomcode').innerHTML;
-    saveAudioBtn.download = fileName+'.wav';
+    const blobLink = URL.createObjectURL(new Blob(recordedChunks));
+    // saveAudioBtn.href = URL.createObjectURL(new Blob(recordedChunks));
+    // console.log("after the URL - ", blobAudioData)
+    // const fileName = document.querySelector('.roomcode').innerHTML;
+    // saveAudioBtn.download = fileName+'.wav';
 
     // console.log("AudioData - ", URL.createObjectURL(new Blob(recordedChunks)));
     // var fd = new FormData();
-    // // fd.append('saveAudio', 'test.wav');
-    // fd.append('data', URL.createObjectURL(new Blob(recordedChunks)));
-    // console.log("fun called")
-    // sendAudioData(fd)
-    // console.log("after fun called")
+    // fd.append('saveAudio', 'test.wav');
+    // fd.append('data', blobAudioData);
+    console.log("fun called")
+    sendAudioData(blobAudioData)
+    console.log("after fun called")
+
+    // const req = new XMLHttpRequest();
+    // req.open("POST", "http://192.168.2.16:8000/upload", true);
+    // console.log("Connection open")
+    // req.onload = (event) => {
+    //     console.log("Uploaded Audio to server")
+    // };
+    // console.log("Before send")
+    // req.send(blobLink);
+    // console.log("after sent")
+
 
     });
 
